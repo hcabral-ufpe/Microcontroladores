@@ -41,7 +41,7 @@ void gpio_set_port_mode(GPIO_t *port, GPIO_mode mode[]) {
  * Functions to operate on a group of bits
  */
 uint8_t gpio_read_group(GPIO_t *port, uint8_t mask) {
-    return port->port &= mask;
+    return port->pin & mask;
 }
 
 void gpio_write_group(GPIO_t *port, uint8_t mask, uint8_t value) {
@@ -54,11 +54,11 @@ void gpio_clear_group(GPIO_t *port, uint8_t mask) {
 }
 
 void gpio_set_group(GPIO_t *port, uint8_t mask) {
-    port->port |= ~mask;
+    port->port |= mask;
 }
 
 void gpio_toggle_group(GPIO_t *port, uint8_t mask) {
-    port->pin |= ~mask;
+    port->pin |= mask;
 }
 
 void gpio_set_group_mode(GPIO_t *port, uint8_t bitmask,
@@ -87,7 +87,7 @@ void gpio_set_group_mode(GPIO_t *port, uint8_t bitmask,
  * Functions to operate on a single bit
  */
 uint8_t gpio_read_pin(GPIO_t *port, uint8_t pin_nbr) {
-    return port->port & (1 << pin_nbr);
+    return port->pin & (1 << pin_nbr);
 }
 
 void gpio_write_pin(GPIO_t *port, uint8_t pin_nbr, uint8_t value) {
