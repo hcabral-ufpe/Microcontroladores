@@ -148,9 +148,27 @@ void init_timer() {
 /* 
  * Callback para tratar dados vindo da serial
  *
+ * Esta função trata os dados recebidos da serial reagindo apenas aos
+ * caracteres '+', '-' e '0'.  Os caracteres de newline e carriage
+ * return são ignorados completamente, enquanto todos os outros apenas
+ * acarretam um envio da string '?\n' de volta.
+ *
+ * A reação aos caracteres '+' e '-' é de aumentar e diminuir,
+ * respectivamente, a frequência com que o led pisca. Isto é feito
+ * através da alteração de variáveis usadas pelo callback do
+ * temporizador.
+ *
+ * A reação ao caractere '0' é para de piscar o led através da
+ * desabilitação do callback do temporizador.
+ *
+ * Em caso de erro na recepção, simplesmente descartamos o dado e não
+ * fazemos mais nada.
  *
  */
-void uart_rx_cb(Uart_t* drv, uint8_t ch) {
+void uart_rx_cb(Uart_t* drv, uint8_t ch, uint8_t errors) {
+    if (errors)
+        return;
+
     if (ch == '+') {
         if (g_state_led == STATE_LED_OFF) {
             g_state_led = STATE_LED_ON;

@@ -164,11 +164,13 @@ uint8_t uart_available_for_write(Uart_t* drv) {
  */
 ISR(USART_RX_vect) {
     uint8_t data = UDR0;
+    uint8_t errors = UCSR0A & ((1 << FE0) | (1 << DOR0) |
+                               (1 << UPE0));
 
     if (UART1_var.rx_cb)
-        UART1_var.rx_cb(UARTD1, data);
+        UART1_var.rx_cb(UARTD1, data, errors);
     else
-        if (!is_cb_full(&UART1_var.rx_buf))
+        if (!errors && !is_cb_full(&UART1_var.rx_buf))
             cb_push(&UART1_var.rx_buf, data);
 
     /* NÃO HÁ MAIS NADA A IMPLEMENTAR AQUI */
